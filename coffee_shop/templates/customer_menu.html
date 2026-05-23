@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <title>Thực đơn - Bàn {{ table_id }}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <style>
+        :root {
+            --coffee-primary: #6F4E37;
+            --coffee-secondary: #A0522D;
+            --coffee-light: #D2B48C;
+            --coffee-dark: #3E2723;
+            --coffee-cream: #FFF8F0;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--coffee-cream);
+            padding-bottom: 80px;
+        }
+        .header {
+            background: linear-gradient(135deg, var(--coffee-dark), var(--coffee-primary));
+            color: white;
+            padding: 16px 20px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+        .header h5 { margin: 0; font-weight: 600; }
+        .header small { opacity: 0.8; }
+        .category-tabs {
+            display: flex;
+            overflow-x: auto;
+            gap: 8px;
+            padding: 12px 16px;
+            background: white;
+            border-bottom: 1px solid #eee;
+            position: sticky;
+            top: 68px;
+            z-index: 99;
+            scrollbar-width: none;
+        }
+        .category-tabs::-webkit-scrollbar { display: none; }
+        .category-tabs .btn {
+            flex-shrink: 0;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            padding: 6px 16px;
+        }
+        .cat-btn {
+            border: 1px solid var(--coffee-primary);
+            color: var(--coffee-primary);
+            background: white;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .cat-btn.active {
+            background: var(--coffee-primary);
+            color: white;
+        }
+        .menu-items { padding: 8px 12px; }
+        .menu-item-card {
+            background: white;
+            border-radius: 12px;
+            padding: 14px 16px;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+            cursor: pointer;
+            transition: all 0.15s;
+            border: 1px solid transparent;
+        }
+        .menu-item-card:active {
+            transform: scale(0.98);
+            border-color: var(--coffee-primary);
+        }
+        .menu-item-card .item-name {
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+        .menu-item-card .item-category {
+            font-size: 0.75rem;
+            color: #999;
+        }
+        .menu-item-card .item-price {
+            color: var(--coffee-primary);
+            font-weight: 700;
+            font-size: 1rem;
+        }
+        .menu-item-card .add-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--coffee-primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            margin-left: 10px;
+        }
+        .cart-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            box-shadow: 0 -4px 20px rgba(0,0,0,0.15);
+            z-index: 1000;
+            border-radius: 16px 16px 0 0;
+            transition: transform 0.3s;
+        }
+        .cart-bar .cart-preview {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 20px;
+            cursor: pointer;
+        }
+        .cart-bar .cart-count {
+            background: var(--coffee-primary);
+            color: white;
+            border-radius: 50%;
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: 700;
+        }
+        .cart-bar .cart-total {
+            color: var(--coffee-primary);
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+        .cart-bar .cart-expanded {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s;
+        }
+        .cart-bar .cart-expanded.show {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            border-top: 1px solid #f0f0f0;
+        }
+        .cart-item .item-info {
+            flex: 1;
+        }
+        .cart-item .item-name-sm {
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+        .cart-item .item-qty-price {
+            font-size: 0.85rem;
+            color: #666;
+        }
+        .cart-item .item-subtotal {
+            font-weight: 600;
+            color: var(--coffee-primary);
+        }
+        .cart-item .btn-remove {
+            color: #dc3545;
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 0 4px;
+        }
+        .cart-empty {
+            text-align: center;
+            padding: 30px 20px;
+            color: #aaa;
+        }
+        .toast-container-custom {
+            position: fixed;
+            top: 80px;
+            right: 16px;
+            z-index: 9999;
+        }
+        .item-note-input {
+            width: 100%;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 8px 12px;
+            font-size: 0.85rem;
+            margin-top: 8px;
+        }
+        .table-badge {
+            background: rgba(255,255,255,0.15);
+            padding: 2px 10px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .fade-in { animation: fadeIn 0.3s ease; }
+    </style>
+</head>
+<body>
+    <div class="toast-container-custom" id="toastContainer"></div>
+
+    <div class="header">
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <h5><i class="bi bi-cup-hot-fill me-2"></i>Thực đơn</h5>
+                <small>Bàn {{ table_id }} <span class="table-badge">Quét QR để gọi món</span></small>
+            </div>
+            <div id="headerCartBtn" style="position:relative;cursor:pointer" onclick="toggleCart()">
+                <i class="bi bi-bag-fill" style="font-size:1.5rem;"></i>
+                <span id="headerCartCount" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size:0.65rem;display:none;">0</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="category-tabs" id="categoryTabs"></div>
+
+    <div class="menu-items" id="menuItems"></div>
+
+    <!-- Loading -->
+    <div id="loadingSpinner" class="text-center py-5">
+        <div class="spinner-border" style="color:var(--coffee-primary)" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+        <p class="text-muted mt-2">Đang tải thực đơn...</p>
+    </div>
+
+    <!-- Cart Bottom Bar -->
+    <div class="cart-bar" id="cartBar" style="display:none;">
+        <div class="cart-preview" onclick="toggleCart()">
+            <div class="d-flex align-items-center gap-2">
+                <span class="cart-count" id="cartCount">0</span>
+                <span>Giỏ hàng</span>
+            </div>
+            <div class="d-flex align-items-center gap-3">
+                <span class="cart-total" id="cartTotal">0đ</span>
+                <i class="bi bi-chevron-up" id="cartChevron"></i>
+            </div>
+        </div>
+        <div class="cart-expanded" id="cartExpanded">
+            <div id="cartItems"></div>
+            <div style="padding:12px 20px;border-top:1px solid #eee;">
+                <div class="d-flex justify-content-between mb-2">
+                    <span>Tạm tính:</span>
+                    <span id="cartSubtotal">0đ</span>
+                </div>
+                <div class="d-flex justify-content-between fw-bold" style="font-size:1.2rem;color:var(--coffee-primary);">
+                    <span>Tổng cộng:</span>
+                    <span id="cartGrandTotal">0đ</span>
+                </div>
+                <div class="text-center text-muted mt-2" style="font-size:0.8rem;">
+                    <i class="bi bi-info-circle"></i> Vui lòng ra quầy thanh toán
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Item Modal -->
+    <div class="modal fade" id="addItemModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h6 class="modal-title" id="addItemModalTitle">Thêm món</h6>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Số lượng</label>
+                        <div class="input-group">
+                            <button class="btn btn-outline-secondary" type="button" onclick="adjustQty(-1)">-</button>
+                            <input type="number" id="addItemQty" class="form-control text-center" value="1" min="1" max="99">
+                            <button class="btn btn-outline-secondary" type="button" onclick="adjustQty(1)">+</button>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Ghi chú (tùy chọn)</label>
+                        <input type="text" id="addItemNote" class="item-note-input" placeholder="VD: Ít đá, không đường...">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                    <button class="btn" style="background:var(--coffee-primary);color:white;" onclick="confirmAddItem()">
+                        <i class="bi bi-plus"></i> Thêm vào giỏ
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        const TABLE_ID = {{ table_id }};
+        let menuItems = [];
+        let categories = [];
+        let currentOrder = [];
+        let cartExpanded = false;
+        let selectedItemId = null;
+
+        function showToast(msg, type) {
+            type = type || 'success';
+            const icons = { success: 'bi-check-circle-fill', danger: 'bi-exclamation-circle-fill', warning: 'bi-exclamation-triangle-fill', info: 'bi-info-circle-fill' };
+            const container = document.getElementById('toastContainer');
+            const id = 't' + Date.now();
+            container.innerHTML += `<div id="${id}" class="toast align-items-center text-bg-${type} border-0 fade-in" role="alert">
+                <div class="d-flex"><div class="toast-body"><i class="bi ${icons[type] || icons.info} me-2"></i>${msg}</div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button></div></div>`;
+            setTimeout(() => {
+                const el = document.getElementById(id);
+                if (el) { el.classList.remove('show'); setTimeout(() => el.remove(), 300); }
+            }, 3000);
+            const bsToast = new bootstrap.Toast(document.getElementById(id));
+            bsToast.show();
+        }
+
+        function fmtMoney(n) { return (n || 0).toLocaleString('vi-VN') + 'đ'; }
+
+        async function api(url, method, body) {
+            const opts = { method: method || 'GET', headers: { 'Content-Type': 'application/json' } };
+            if (body) opts.body = JSON.stringify(body);
+            try {
+                const res = await fetch(url, opts);
+                return await res.json();
+            } catch (e) {
+                showToast('Lỗi: ' + e.message, 'danger');
+                return null;
+            }
+        }
+
+        async function init() {
+            const cats = await api('/api/customer/menu/categories');
+            if (cats) categories = cats;
+            const items = await api('/api/customer/menu');
+            if (items) menuItems = items;
+            renderCategories();
+            if (categories.length) filterByCategory(categories[0]);
+            document.getElementById('loadingSpinner').style.display = 'none';
+            await loadOrder();
+        }
+
+        function renderCategories() {
+            const tabs = document.getElementById('categoryTabs');
+            tabs.innerHTML = categories.map(c =>
+                `<button class="btn cat-btn" onclick="filterByCategory('${c}')">${c}</button>`
+            ).join('');
+        }
+
+        function filterByCategory(cat) {
+            document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+            event.target.classList.add('active');
+            const filtered = menuItems.filter(i => i.category === cat);
+            renderItems(filtered);
+        }
+
+        function renderItems(items) {
+            const div = document.getElementById('menuItems');
+            if (!items.length) {
+                div.innerHTML = '<div class="text-center py-5 text-muted">Không có món nào</div>';
+                return;
+            }
+            div.innerHTML = items.map(item => `
+                <div class="menu-item-card" onclick="showAddModal(${item.id}, '${item.name}', ${item.price}, '${item.category}')">
+                    <div>
+                        <div class="item-name">${item.name}</div>
+                        <div class="item-category">${item.category}</div>
+                    </div>
+                    <div class="d-flex align-items-center">
+                        <div class="item-price">${fmtMoney(item.price)}</div>
+                        <div class="add-icon">+</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function showAddModal(id, name, price, category) {
+            selectedItemId = id;
+            document.getElementById('addItemModalTitle').textContent = `${name} - ${fmtMoney(price)}`;
+            document.getElementById('addItemQty').value = 1;
+            document.getElementById('addItemNote').value = '';
+            new bootstrap.Modal(document.getElementById('addItemModal')).show();
+        }
+
+        function adjustQty(delta) {
+            const input = document.getElementById('addItemQty');
+            let val = parseInt(input.value) || 1;
+            val = Math.max(1, Math.min(99, val + delta));
+            input.value = val;
+        }
+
+        async function confirmAddItem() {
+            const qty = parseInt(document.getElementById('addItemQty').value) || 1;
+            const note = document.getElementById('addItemNote').value.trim();
+            const result = await api(`/api/customer/table/${TABLE_ID}/add-item`, 'POST', {
+                item_id: selectedItemId, quantity: qty, note: note
+            });
+            if (result && result.success) {
+                showToast('Đã thêm vào giỏ hàng!');
+                bootstrap.Modal.getInstance(document.getElementById('addItemModal')).hide();
+                await loadOrder();
+            }
+        }
+
+        async function loadOrder() {
+            const data = await api(`/api/customer/table/${TABLE_ID}`);
+            if (!data) return;
+            currentOrder = data.order || [];
+            updateCartUI();
+        }
+
+        function updateCartUI() {
+            const count = currentOrder.length;
+            const subtotal = currentOrder.reduce((sum, item) => sum + item.price * item.quantity, 0);
+
+            document.getElementById('cartCount').textContent = count;
+            document.getElementById('cartTotal').textContent = fmtMoney(subtotal);
+            document.getElementById('cartSubtotal').textContent = fmtMoney(subtotal);
+            document.getElementById('cartGrandTotal').textContent = fmtMoney(subtotal);
+
+            const headerBadge = document.getElementById('headerCartCount');
+            if (count > 0) {
+                headerBadge.textContent = count;
+                headerBadge.style.display = 'inline';
+            } else {
+                headerBadge.style.display = 'none';
+            }
+
+            document.getElementById('cartBar').style.display = count > 0 ? 'block' : 'none';
+
+            const itemsDiv = document.getElementById('cartItems');
+            if (!count) {
+                itemsDiv.innerHTML = '<div class="cart-empty"><i class="bi bi-bag" style="font-size:2rem;display:block;margin-bottom:8px;"></i>Giỏ hàng trống</div>';
+                return;
+            }
+            itemsDiv.innerHTML = currentOrder.map((item, i) => `
+                <div class="cart-item">
+                    <div class="item-info">
+                        <div class="item-name-sm">${item.name}</div>
+                        <div class="item-qty-price">${item.quantity} x ${fmtMoney(item.price)}${item.note ? ' <span class="text-muted">📝' + item.note + '</span>' : ''}</div>
+                    </div>
+                    <div class="d-flex align-items-center gap-2">
+                        <span class="item-subtotal">${fmtMoney(item.price * item.quantity)}</span>
+                        <button class="btn-remove" onclick="removeItem(${i})"><i class="bi bi-x"></i></button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function toggleCart() {
+            cartExpanded = !cartExpanded;
+            const expanded = document.getElementById('cartExpanded');
+            const chevron = document.getElementById('cartChevron');
+            if (cartExpanded) {
+                expanded.classList.add('show');
+                chevron.className = 'bi bi-chevron-down';
+            } else {
+                expanded.classList.remove('show');
+                chevron.className = 'bi bi-chevron-up';
+            }
+        }
+
+        async function removeItem(index) {
+            const result = await api(`/api/customer/table/${TABLE_ID}/remove-item`, 'POST', { index });
+            if (result && result.success) {
+                await loadOrder();
+            }
+        }
+
+        init();
+    </script>
+</body>
+</html>

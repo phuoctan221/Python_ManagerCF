@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+{% block page_title %}Quản lý thực đơn{% endblock %}
+{% block title %}Thực đơn - Quản Lý Coffee{% endblock %}
+{% block content %}
+<div class="row g-3">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <span><i class="bi bi-list"></i> Danh sách món</span>
+                <div>
+                    <input type="text" class="form-control form-control-sm d-inline-block" style="width:200px" id="searchInput" placeholder="Tìm kiếm..." oninput="filterMenu()">
+                </div>
+            </div>
+            <div class="card-body p-0">
+                <div class="d-flex flex-wrap p-2 gap-1 border-bottom" id="categoryTabs"></div>
+                <div id="menuList" style="max-height:500px;overflow-y:auto;"></div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header"><i class="bi bi-plus-circle"></i> Thêm món mới</div>
+            <div class="card-body">
+                <form id="addMenuForm" onsubmit="addMenuItem(event)">
+                    <div class="mb-2">
+                        <label class="form-label">Tên món</label>
+                        <input type="text" class="form-control" id="itemName" required>
+                    </div>
+                    <div class="mb-2">
+                        <label class="form-label">Danh mục</label>
+                        <div class="input-group">
+                            <select class="form-select" id="itemCategory"></select>
+                            <button type="button" class="btn btn-outline-secondary" onclick="showNewCategoryInput()" title="Thêm danh mục mới">
+                                <i class="bi bi-plus"></i>
+                            </button>
+                        </div>
+                        <input type="text" class="form-control mt-1 d-none" id="newCategoryInput" placeholder="Nhập danh mục mới" onblur="addNewCategory()">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Giá (VND)</label>
+                        <input type="number" class="form-control" id="itemPrice" min="1000" required>
+                    </div>
+                    <button type="submit" class="btn btn-coffee w-100">
+                        <i class="bi bi-plus-lg"></i> Thêm món
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Modal -->
+<div class="modal fade" id="editModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header"><h5 class="modal-title">Sửa món</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="editMenuForm">
+                    <input type="hidden" id="editId">
+                    <div class="mb-2">
+                        <label class="form-label">Tên món</label>
+                        <input type="text" class="form-control" id="editName" required>
+                    </div>
+                    <div class="mb-2">
+                        <label class="form-label">Danh mục</label>
+                        <select class="form-select" id="editCategory"></select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Giá (VND)</label>
+                        <input type="number" class="form-control" id="editPrice" min="1000" required>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                <button class="btn btn-coffee" onclick="updateMenuItem()">Lưu</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script>loadMenu();</script>
+{% endblock %}

@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}Đăng nhập - Quản Lý Coffee{% endblock %}
+{% block login_content %}
+<div class="login-page">
+    <div class="login-card fade-in">
+        <span class="coffee-icon">&#9749;</span>
+        <h3>Quản Lý Quán Coffee</h3>
+        <p class="subtitle">Đăng nhập để tiếp tục</p>
+        {% if error %}
+        <div class="alert alert-danger py-2">{{ error }}</div>
+        {% endif %}
+        <form method="POST" action="{{ url_for('login') }}">
+            <div class="mb-3">
+                <label class="form-label">Tên đăng nhập</label>
+                <input type="text" name="username" class="form-control form-control-lg" placeholder="Nhập tên đăng nhập" required autofocus>
+            </div>
+            <div class="mb-4">
+                <label class="form-label">Mật khẩu</label>
+                <input type="password" name="password" class="form-control form-control-lg" placeholder="Nhập mật khẩu" required>
+            </div>
+            <button type="submit" class="btn btn-coffee btn-lg w-100">
+                <i class="bi bi-box-arrow-in-right"></i> Đăng nhập
+            </button>
+        </form>
+        <div class="mt-4 text-center" style="color:#999;font-size:0.85rem;">
+            <div>Tài khoản mẫu:</div>
+            <div><strong>admin</strong> / admin123 (Quản lý)</div>
+            <div><strong>nhanvien1</strong> / nv123 (Nhân viên)</div>
+        </div>
+    </div>
+</div>
+{% endblock %}

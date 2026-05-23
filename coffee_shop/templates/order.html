@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% block page_title %}Gọi món{% endblock %}
+{% block title %}Gọi món - Quản Lý Coffee{% endblock %}
+{% block content %}
+<div class="row g-3">
+    <div class="col-md-4">
+        <div class="card mb-3">
+            <div class="card-header"><i class="bi bi-layout-three-columns"></i> Chọn bàn</div>
+            <div class="card-body">
+                <div class="table-grid" id="orderTableGrid" style="grid-template-columns:repeat(auto-fill,minmax(80px,1fr));"></div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <span><i class="bi bi-cart"></i> Giỏ hàng - Bàn <span id="orderTableLabel">?</span></span>
+                <span class="badge bg-primary" id="orderItemCount">0</span>
+            </div>
+            <div class="card-body p-0">
+                <div id="currentOrder" class="order-items">
+                    <p class="text-muted p-3">Chọn bàn để bắt đầu</p>
+                </div>
+            </div>
+            <div class="card-footer" id="orderFooter" style="display:none;">
+                <div class="d-flex justify-content-between mb-2">
+                    <strong>Tạm tính:</strong>
+                    <strong id="orderSubtotal">0đ</strong>
+                </div>
+                <a href="{{ url_for('billing_page') }}" class="btn btn-coffee w-100">
+                    <i class="bi bi-cash-coin"></i> Tính tiền
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header"><i class="bi bi-menu-button-wide"></i> Thực đơn</div>
+            <div class="card-body p-0">
+                <div class="d-flex flex-wrap p-2 gap-1 border-bottom" id="orderCategoryTabs"></div>
+                <div id="orderMenuItems" style="max-height:450px;overflow-y:auto;"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add item modal -->
+<div class="modal fade" id="addItemModal" tabindex="-1">
+    <div class="modal-dialog modal-sm"><div class="modal-content">
+        <div class="modal-header"><h5 class="modal-title" id="addItemModalTitle">Thêm món</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+        <div class="modal-body">
+            <input type="hidden" id="addItemId">
+            <div class="mb-2">
+                <label class="form-label">Số lượng</label>
+                <input type="number" class="form-control" id="addItemQty" value="1" min="1" max="99">
+            </div>
+            <div class="mb-2">
+                <label class="form-label">Ghi chú</label>
+                <input type="text" class="form-control" id="addItemNote" placeholder="Vd: Ít ngọt, đá riêng...">
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+            <button class="btn btn-coffee" onclick="confirmAddItem()">Thêm</button>
+        </div>
+    </div></div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script>initOrderPage();</script>
+{% endblock %}

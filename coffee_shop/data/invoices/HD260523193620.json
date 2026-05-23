@@ -1,0 +1,23 @@
+{
+  "invoice_id": "HD260523193620",
+  "table_id": 1,
+  "customer_name": "Test",
+  "items": [
+    {
+      "item_id": 1,
+      "name": "Ca phe den",
+      "price": 25000,
+      "quantity": 2,
+      "note": ""
+    }
+  ],
+  "subtotal": 50000,
+  "discount": 5000,
+  "discount_type": "voucher",
+  "voucher_code": "WELCOME",
+  "total": 45000,
+  "payment": 50000,
+  "change": 5000,
+  "created_at": "2026-05-23 19:36:20",
+  "employee": "admin"
+}

@@ -1,0 +1,128 @@
+[
+  {
+    "id": 1,
+    "name": "Ca phe den",
+    "category": "Ca phe",
+    "price": 25000
+  },
+  {
+    "id": 2,
+    "name": "Ca phe sua",
+    "category": "Ca phe",
+    "price": 30000
+  },
+  {
+    "id": 3,
+    "name": "Bac xiu",
+    "category": "Ca phe",
+    "price": 35000
+  },
+  {
+    "id": 4,
+    "name": "Espresso",
+    "category": "Ca phe",
+    "price": 40000
+  },
+  {
+    "id": 5,
+    "name": "Cappuccino",
+    "category": "Ca phe",
+    "price": 45000
+  },
+  {
+    "id": 6,
+    "name": "Tra dao",
+    "category": "Tra",
+    "price": 25000
+  },
+  {
+    "id": 7,
+    "name": "Tra chanh",
+    "category": "Tra",
+    "price": 20000
+  },
+  {
+    "id": 8,
+    "name": "Tra sua tran chau",
+    "category": "Tra",
+    "price": 35000
+  },
+  {
+    "id": 9,
+    "name": "Matcha latte",
+    "category": "Tra",
+    "price": 40000
+  },
+  {
+    "id": 10,
+    "name": "Sinh to bo",
+    "category": "Sinh to",
+    "price": 40000
+  },
+  {
+    "id": 11,
+    "name": "Sinh to xoai",
+    "category": "Sinh to",
+    "price": 35000
+  },
+  {
+    "id": 12,
+    "name": "Sinh to dau",
+    "category": "Sinh to",
+    "price": 35000
+  },
+  {
+    "id": 13,
+    "name": "Nuoc cam ep",
+    "category": "Nuoc ep",
+    "price": 30000
+  },
+  {
+    "id": 14,
+    "name": "Nuoc dua",
+    "category": "Nuoc ep",
+    "price": 25000
+  },
+  {
+    "id": 15,
+    "name": "Banh mi pate",
+    "category": "Banh",
+    "price": 15000
+  },
+  {
+    "id": 16,
+    "name": "Banh bong lan",
+    "category": "Banh",
+    "price": 20000
+  },
+  {
+    "id": 17,
+    "name": "Kem dua",
+    "category": "Trang mieng",
+    "price": 25000
+  },
+  {
+    "id": 18,
+    "name": "Sua chua",
+    "category": "Trang mieng",
+    "price": 15000
+  },
+  {
+    "id": 19,
+    "name": "Nuoc loc",
+    "category": "Nuoc ep",
+    "price": 10000
+  },
+  {
+    "id": 20,
+    "name": "Sting vang",
+    "category": "Nuoc ep",
+    "price": 15000
+  },
+  {
+    "id": 21,
+    "name": "Test",
+    "category": "Test",
+    "price": 10000
+  }
+]

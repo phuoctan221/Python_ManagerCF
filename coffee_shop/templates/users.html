@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% block page_title %}Quản lý người dùng{% endblock %}
+{% block title %}Người dùng - Quản Lý Coffee{% endblock %}
+{% block content %}
+<div class="row g-3">
+    <div class="col-md-7">
+        <div class="card">
+            <div class="card-header"><i class="bi bi-people"></i> Danh sách người dùng</div>
+            <div class="card-body p-0">
+                <table class="table table-hover mb-0">
+                    <thead class="table-light">
+                        <tr><th>#</th><th>Tên đăng nhập</th><th>Vai trò</th><th>Thao tác</th></tr>
+                    </thead>
+                    <tbody id="userList"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-5">
+        <div class="card mb-3">
+            <div class="card-header"><i class="bi bi-person-plus"></i> Thêm người dùng</div>
+            <div class="card-body">
+                <form id="addUserForm" onsubmit="addUser(event)">
+                    <div class="mb-2">
+                        <label class="form-label">Tên đăng nhập</label>
+                        <input type="text" class="form-control" id="newUsername" required>
+                    </div>
+                    <div class="mb-2">
+                        <label class="form-label">Mật khẩu</label>
+                        <input type="password" class="form-control" id="newPassword" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Vai trò</label>
+                        <select class="form-select" id="newRole">
+                            <option value="employee">Nhân viên</option>
+                            <option value="admin">Admin</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-coffee w-100">
+                        <i class="bi bi-plus-lg"></i> Thêm
+                    </button>
+                </form>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-header"><i class="bi bi-key"></i> Đổi mật khẩu</div>
+            <div class="card-body">
+                <form id="changePwForm" onsubmit="changePassword(event)">
+                    <div class="mb-2">
+                        <label class="form-label">Mật khẩu cũ</label>
+                        <input type="password" class="form-control" id="oldPassword" required>
+                    </div>
+                    <div class="mb-2">
+                        <label class="form-label">Mật khẩu mới</label>
+                        <input type="password" class="form-control" id="newPassword1" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Xác nhận mật khẩu</label>
+                        <input type="password" class="form-control" id="newPassword2" required>
+                    </div>
+                    <button type="submit" class="btn btn-warning w-100">
+                        <i class="bi bi-key"></i> Đổi mật khẩu
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script>loadUsers();</script>
+{% endblock %}

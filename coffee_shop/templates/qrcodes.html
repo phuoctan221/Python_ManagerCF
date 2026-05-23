@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% block title %}Mã QR - Quản Lý Coffee{% endblock %}
+{% block page_title %}Mã QR cho bàn{% endblock %}
+{% block content %}
+<div class="row mb-3">
+    <div class="col">
+        <p class="text-muted">Quét mã QR để khách hàng tự gọi món trên điện thoại.</p>
+        <button class="btn btn-coffee" onclick="printQRCodes()"><i class="bi bi-printer"></i> In tất cả</button>
+    </div>
+</div>
+<div class="row g-3" id="qrGrid"></div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+async function loadQRCodes() {
+    const data = await api('/api/qrcodes/all');
+    if (!data) return;
+    const grid = document.getElementById('qrGrid');
+    grid.innerHTML = data.map(t => `
+        <div class="col-lg-3 col-md-4 col-sm-6">
+            <div class="card text-center h-100">
+                <div class="card-body">
+                    <h5 class="card-title">Bàn ${t.id}</h5>
+                    <span class="badge ${t.status === 'empty' ? 'bg-success' : 'bg-danger'} mb-2">
+                        ${t.status === 'empty' ? 'Trống' : 'Có khách'}
+                    </span>
+                    <div class="my-2">
+                        <img src="/api/qrcode/${t.id}" alt="QR Bàn ${t.id}" style="width:180px;height:180px;" class="img-fluid">
+                    </div>
+                    <small class="text-muted d-block mb-2" style="word-break:break-all;">${t.url}</small>
+                    <div class="d-flex gap-2 justify-content-center">
+                        <a href="/api/qrcode/${t.id}" download="qr-ban${t.id}.png" class="btn btn-sm btn-outline-coffee">
+                            <i class="bi bi-download"></i> Tải
+                        </a>
+                        <button class="btn btn-sm btn-outline-coffee" onclick="window.open('/customer/${t.id}', '_blank')">
+                            <i class="bi bi-box-arrow-up-right"></i> Xem
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `).join('');
+}
+
+function printQRCodes() {
+    const images = document.querySelectorAll('#qrGrid img');
+    if (!images.length) return;
+    const win = window.open('', '', 'width=800,height=600');
+    win.document.write('<html><head><title>QR Codes</title>');
+    win.document.write('<style>body{font-family:sans-serif;padding:20px;}');
+    win.document.write('.qr-item{display:inline-block;text-align:center;margin:15px;page-break-inside:avoid;}');
+    win.document.write('img{width:200px;height:200px;}');
+    win.document.write('@media print{body{padding:10px;}.qr-item{margin:10px;}}');
+    win.document.write('</style></head><body>');
+    win.document.write('<h2 style="text-align:center;">Mã QR gọi món</h2>');
+    images.forEach(img => {
+        win.document.write(`<div class="qr-item"><img src="${img.src}"><br><strong>Bàn ${img.alt.replace('QR Bàn ','')}</strong></div>`);
+    });
+    win.document.write('</body></html>');
+    win.document.close();
+    setTimeout(() => { win.print(); }, 500);
+}
+
+loadQRCodes();
+</script>
+{% endblock %}

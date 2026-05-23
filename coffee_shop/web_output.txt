@@ -1,0 +1,25 @@
+== QUAN LY QUAN COFFEE - WEB APP ==
+Truy cap: http://127.0.0.1:5000
+Tai khoan: admin / admin123 hoac nhanvien1 / nv123
+ * Serving Flask app 'web_app'
+ * Debug mode: on
+WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.
+ * Running on http://127.0.0.1:5001
+Press CTRL+C to quit
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 871-950-285
+ * Detected change in 'D:\\testpy\\coffee_shop\\web_app.py', reloading
+== QUAN LY QUAN COFFEE - WEB APP ==
+Truy cap: http://127.0.0.1:5000
+Tai khoan: admin / admin123 hoac nhanvien1 / nv123
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 871-950-285
+ * Detected change in 'D:\\testpy\\coffee_shop\\web_app.py', reloading
+== QUAN LY QUAN COFFEE - WEB APP ==
+Truy cap: http://127.0.0.1:5000
+Tai khoan: admin / admin123 hoac nhanvien1 / nv123
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 871-950-285

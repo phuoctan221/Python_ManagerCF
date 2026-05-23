@@ -1,0 +1,23 @@
+{
+  "invoice_id": "HD260523200744",
+  "table_id": 1,
+  "customer_name": "Anh 7 Tạ",
+  "items": [
+    {
+      "item_id": 1,
+      "name": "Ca phe den",
+      "price": 25000,
+      "quantity": 1,
+      "note": "Không calo"
+    }
+  ],
+  "subtotal": 25000,
+  "discount": 0,
+  "discount_type": "none",
+  "voucher_code": "",
+  "total": 25000,
+  "payment": 500000,
+  "change": 475000,
+  "created_at": "2026-05-23 20:07:44",
+  "employee": "admin"
+}

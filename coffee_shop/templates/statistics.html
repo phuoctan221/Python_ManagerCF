@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+{% block page_title %}Thống kê{% endblock %}
+{% block title %}Thống kê - Quản Lý Coffee{% endblock %}
+{% block content %}
+<div class="row g-3 mb-4">
+    <div class="col-md-3 col-6">
+        <div class="card stat-card">
+            <div class="stat-icon" style="color:#6F4E37">&#128176;</div>
+            <div class="stat-value" id="statTotalRevenue">0đ</div>
+            <div class="stat-label">Tổng doanh thu</div>
+        </div>
+    </div>
+    <div class="col-md-3 col-6">
+        <div class="card stat-card">
+            <div class="stat-icon" style="color:#28a745">&#128203;</div>
+            <div class="stat-value" id="statTotalOrders">0</div>
+            <div class="stat-label">Tổng hóa đơn</div>
+        </div>
+    </div>
+    <div class="col-md-3 col-6">
+        <div class="card stat-card">
+            <div class="stat-icon" style="color:#dc3545">&#127860;</div>
+            <div class="stat-value" id="statAvgOrder">0đ</div>
+            <div class="stat-label">TB / hóa đơn</div>
+        </div>
+    </div>
+    <div class="col-md-3 col-6">
+        <div class="card stat-card">
+            <div class="stat-icon" style="color:#FFD700">&#9733;</div>
+            <div class="stat-value" id="statTopSeller">-</div>
+            <div class="stat-label">Món bán chạy nhất</div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-3">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header"><i class="bi bi-bar-chart"></i> Doanh thu 7 ngày</div>
+            <div class="card-body">
+                <div id="dailyRevenueChart">
+                    <div id="dailyRevenueBars" class="d-flex align-items-end gap-2" style="height:200px;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header"><i class="bi bi-star-fill" style="color:#FFD700"></i> Top 10 món bán chạy</div>
+            <div class="card-body p-0">
+                <table class="table table-hover mb-0">
+                    <thead class="table-light"><tr><th>#</th><th>Tên món</th><th>Số lượng</th></tr></thead>
+                    <tbody id="topSellingTable"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-3 mt-2">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header"><i class="bi bi-arrow-down-circle" style="color:#dc3545"></i> Món ít được gọi</div>
+            <div class="card-body p-0">
+                <table class="table table-hover mb-0">
+                    <thead class="table-light"><tr><th>#</th><th>Tên món</th><th>Số lượng</th></tr></thead>
+                    <tbody id="leastSellingTable"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header"><i class="bi bi-pie-chart"></i> Doanh thu theo món</div>
+            <div class="card-body p-0">
+                <div style="max-height:300px;overflow-y:auto;">
+                    <table class="table table-hover mb-0">
+                        <thead class="table-light"><tr><th>#</th><th>Tên món</th><th>Doanh thu</th></tr></thead>
+                        <tbody id="revenueByItemTable"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-3 mt-2">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header"><i class="bi bi-calendar-range"></i> Thống kê theo khoảng thời gian</div>
+            <div class="card-body">
+                <form id="dateFilterForm" class="row g-3 align-items-end" onsubmit="filterByDate(event)">
+                    <div class="col-md-3">
+                        <label class="form-label">Từ ngày</label>
+                        <input type="date" class="form-control" id="filterFrom" required>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">Đến ngày</label>
+                        <input type="date" class="form-control" id="filterTo" required>
+                    </div>
+                    <div class="col-md-2">
+                        <button type="submit" class="btn btn-coffee w-100">
+                            <i class="bi bi-search"></i> Xem
+                        </button>
+                    </div>
+                </form>
+                <div id="dateFilterResult" class="mt-3" style="display:none;"></div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script>loadStatistics();</script>
+{% endblock %}

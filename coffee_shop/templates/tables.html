@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+{% block page_title %}Quản lý bàn{% endblock %}
+{% block title %}Bàn - Quản Lý Coffee{% endblock %}
+{% block content %}
+<div class="row g-3">
+    <div class="col-lg-9">
+        <div class="card">
+            <div class="card-header">
+                <i class="bi bi-layout-three-columns"></i> Sơ đồ bàn
+                <span class="ms-3" style="font-size:0.85rem;font-weight:normal;">
+                    <span class="badge bg-success">Trống</span>
+                    <span class="badge bg-danger ms-2">Có khách</span>
+                </span>
+            </div>
+            <div class="card-body">
+                <div class="table-grid" id="tableGrid"></div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-3">
+        <div class="card" id="tableInfoCard">
+            <div class="card-header"><i class="bi bi-info-circle"></i> Thông tin bàn</div>
+            <div class="card-body">
+                <p class="text-muted">Chọn một bàn để xem thông tin</p>
+                <div id="tableDetails" class="d-none">
+                    <div class="mb-2"><strong>Bàn số:</strong> <span id="tdId"></span></div>
+                    <div class="mb-2"><strong>Trạng thái:</strong> <span id="tdStatus"></span></div>
+                    <div class="mb-2"><strong>Khách:</strong> <span id="tdCustomer"></span></div>
+                    <hr>
+                    <div class="d-grid gap-2">
+                        <button class="btn btn-success" id="btnAssign" onclick="assignTable()">
+                            <i class="bi bi-person-plus"></i> Đặt khách
+                        </button>
+                        <button class="btn btn-danger" id="btnFree" onclick="freeTable()">
+                            <i class="bi bi-person-x"></i> Trả bàn
+                        </button>
+                        {% if is_admin %}
+                        <button class="btn btn-warning" id="btnTransfer" onclick="showTransferModal()">
+                            <i class="bi bi-arrow-left-right"></i> Chuyển bàn
+                        </button>
+                        <button class="btn btn-info text-white" id="btnMerge" onclick="showMergeModal()">
+                            <i class="bi bi-layers"></i> Gộp bàn
+                        </button>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Assign Modal -->
+<div class="modal fade" id="assignModal">
+    <div class="modal-dialog"><div class="modal-content">
+        <div class="modal-header"><h5 class="modal-title">Đặt khách</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+        <div class="modal-body">
+            <form id="assignForm">
+                <input type="hidden" id="assignTableId">
+                <div class="mb-3">
+                    <label class="form-label">Tên khách hàng</label>
+                    <input type="text" class="form-control" id="assignName" placeholder="Nhập tên khách" required>
+                </div>
+                <button type="submit" class="btn btn-success w-100">Xác nhận</button>
+            </form>
+        </div>
+    </div></div>
+</div>
+
+<!-- Transfer Modal -->
+<div class="modal fade" id="transferModal">
+    <div class="modal-dialog"><div class="modal-content">
+        <div class="modal-header"><h5 class="modal-title">Chuyển bàn</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+        <div class="modal-body">
+            <form id="transferForm">
+                <input type="hidden" id="transferFromId">
+                <div class="mb-3">
+                    <label class="form-label">Chuyển đến bàn số</label>
+                    <select class="form-select" id="transferToId"></select>
+                </div>
+                <button type="submit" class="btn btn-warning w-100">Chuyển</button>
+            </form>
+        </div>
+    </div></div>
+</div>
+
+<!-- Merge Modal -->
+<div class="modal fade" id="mergeModal">
+    <div class="modal-dialog"><div class="modal-content">
+        <div class="modal-header"><h5 class="modal-title">Gộp bàn</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+        <div class="modal-body">
+            <form id="mergeForm">
+                <input type="hidden" id="mergeTargetId">
+                <div class="mb-3">
+                    <label class="form-label">Chọn các bàn để gộp vào bàn này</label>
+                    <div id="mergeSourceCheckboxes"></div>
+                </div>
+                <button type="submit" class="btn btn-info text-white w-100">Gộp bàn</button>
+            </form>
+        </div>
+    </div></div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script>loadTables();</script>
+{% endblock %}

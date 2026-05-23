@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% block page_title %}Mã giảm giá{% endblock %}
+{% block title %}Voucher - Quản Lý Coffee{% endblock %}
+{% block content %}
+<div class="row g-3">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header"><i class="bi bi-ticket-perforated"></i> Danh sách mã giảm giá</div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Mã</th>
+                                <th>Loại</th>
+                                <th>Giá trị</th>
+                                <th>ĐH tối thiểu</th>
+                                <th>Hạn sử dụng</th>
+                            </tr>
+                        </thead>
+                        <tbody id="voucherList"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% if is_admin %}
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header"><i class="bi bi-plus-circle"></i> Thêm mã giảm giá</div>
+            <div class="card-body">
+                <form id="addVoucherForm" onsubmit="addVoucher(event)">
+                    <div class="mb-2">
+                        <label class="form-label">Mã</label>
+                        <input type="text" class="form-control" id="vCode" required>
+                    </div>
+                    <div class="mb-2">
+                        <label class="form-label">Loại</label>
+                        <select class="form-select" id="vType">
+                            <option value="percent">Phần trăm (%)</option>
+                            <option value="fixed">Tiền mặt (VND)</option>
+                        </select>
+                    </div>
+                    <div class="mb-2">
+                        <label class="form-label">Giá trị</label>
+                        <input type="number" class="form-control" id="vValue" min="1" required>
+                    </div>
+                    <div class="mb-2">
+                        <label class="form-label">Đơn tối thiểu (VND)</label>
+                        <input type="number" class="form-control" id="vMinOrder" value="0" min="0">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Ngày hết hạn</label>
+                        <input type="date" class="form-control" id="vExpiry">
+                    </div>
+                    <button type="submit" class="btn btn-coffee w-100">
+                        <i class="bi bi-plus-lg"></i> Thêm mã
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+{% block scripts %}
+<script>loadVouchers();</script>
+{% endblock %}

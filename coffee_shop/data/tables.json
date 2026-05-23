@@ -1,0 +1,98 @@
+[
+  {
+    "id": 1,
+    "status": "occupied",
+    "order": [],
+    "customer_name": "a"
+  },
+  {
+    "id": 2,
+    "status": "empty",
+    "order": [],
+    "customer_name": ""
+  },
+  {
+    "id": 3,
+    "status": "empty",
+    "order": [],
+    "customer_name": ""
+  },
+  {
+    "id": 4,
+    "status": "empty",
+    "order": [],
+    "customer_name": ""
+  },
+  {
+    "id": 5,
+    "status": "empty",
+    "order": [],
+    "customer_name": ""
+  },
+  {
+    "id": 6,
+    "status": "empty",
+    "order": [],
+    "customer_name": ""
+  },
+  {
+    "id": 7,
+    "status": "empty",
+    "order": [],
+    "customer_name": ""
+  },
+  {
+    "id": 8,
+    "status": "empty",
+    "order": [],
+    "customer_name": ""
+  },
+  {
+    "id": 9,
+    "status": "empty",
+    "order": [],
+    "customer_name": ""
+  },
+  {
+    "id": 10,
+    "status": "empty",
+    "order": [],
+    "customer_name": ""
+  },
+  {
+    "id": 11,
+    "status": "empty",
+    "order": [],
+    "customer_name": ""
+  },
+  {
+    "id": 12,
+    "status": "empty",
+    "order": [],
+    "customer_name": ""
+  },
+  {
+    "id": 13,
+    "status": "empty",
+    "order": [],
+    "customer_name": ""
+  },
+  {
+    "id": 14,
+    "status": "empty",
+    "order": [],
+    "customer_name": ""
+  },
+  {
+    "id": 15,
+    "status": "empty",
+    "order": [],
+    "customer_name": ""
+  },
+  {
+    "id": 16,
+    "status": "empty",
+    "order": [],
+    "customer_name": ""
+  }
+]
