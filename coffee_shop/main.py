@@ -1,5 +1,6 @@
 import os
 import sys
+sys.path.insert(0, os.path.dirname(__file__))
 from datetime import datetime, timedelta
 from models import Colors as C
 from services import AuthService, MenuService, TableService, OrderService, VoucherService, StatsService

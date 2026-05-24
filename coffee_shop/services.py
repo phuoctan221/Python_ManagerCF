@@ -1,6 +1,6 @@
 import os
 from datetime import datetime, timedelta
-from models import User, MenuItem, Table, Voucher, Invoice, DataManager
+from .models import User, MenuItem, Table, Voucher, Invoice, DataManager
 
 
 class AuthService:

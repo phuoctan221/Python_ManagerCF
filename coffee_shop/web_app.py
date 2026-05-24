@@ -1,20 +1,23 @@
 import io
+import os
 import socket
 import qrcode
 from flask import Flask, render_template, request, jsonify, redirect, url_for, session, send_file
 from functools import wraps
 from datetime import datetime, timedelta
-from models import DataManager
-from services import AuthService, MenuService, TableService, OrderService, VoucherService, StatsService
+from .models import DataManager
+from .services import AuthService, MenuService, TableService, OrderService, VoucherService, StatsService
 
 app = Flask(__name__)
-app.secret_key = 'coffee-shop-secret-key-2026'
+app.secret_key = os.environ.get('SECRET_KEY', 'coffee-shop-secret-key-2026')
+
+PORT = int(os.environ.get('PORT', 5001))
 
 DataManager.init_default_data()
 
 ms = MenuService()
 ts = TableService()
-os = OrderService()
+order_svc = OrderService()
 vs = VoucherService()
 ss = StatsService()
 
@@ -73,7 +76,6 @@ def logout():
 # ============ CUSTOMER QR ORDERING (no login required) ============
 
 def get_host_url():
-    import os
     public_url = os.environ.get('PUBLIC_URL')
     if public_url:
         return public_url
@@ -96,11 +98,10 @@ def get_host_url():
 
 
 def get_base_url():
-    import os
     public_url = os.environ.get('PUBLIC_URL')
     if public_url:
         return public_url.rstrip('/')
-    return f"http://{get_host_url()}:5001"
+    return f"http://{get_host_url()}:{PORT}"
 
 
 @app.route('/customer/<int:table_id>')
@@ -137,7 +138,7 @@ def api_customer_table(table_id):
         'id': table.id, 'status': table.status,
         'customer_name': table.customer_name,
         'order': table.order,
-        'subtotal': os.calculate_subtotal(table)
+        'subtotal': order_svc.calculate_subtotal(table)
     })
 
 
@@ -158,14 +159,14 @@ def api_customer_add_item(table_id):
     table = ts.get_by_id(table_id)
     if table.status == 'empty':
         ts.assign_table(table_id, f"Khách Bàn {table_id} (QR)")
-    ok = os.add_item_to_table(table_id, item, data.get('quantity', 1), data.get('note', ''))
+    ok = order_svc.add_item_to_table(table_id, item, data.get('quantity', 1), data.get('note', ''))
     return jsonify({'success': ok})
 
 
 @app.route('/api/customer/table/<int:table_id>/remove-item', methods=['POST'])
 def api_customer_remove_item(table_id):
     data = request.get_json()
-    ok = os.remove_item_from_table(table_id, data['index'])
+    ok = order_svc.remove_item_from_table(table_id, data['index'])
     return jsonify({'success': ok})
 
 
@@ -419,7 +420,7 @@ def api_order_add():
     item = ms.get_by_id(data['item_id'])
     if not item:
         return jsonify({'success': False, 'error': 'Không tìm thấy món'})
-    ok = os.add_item_to_table(data['table_id'], item, data.get('quantity', 1), data.get('note', ''))
+    ok = order_svc.add_item_to_table(data['table_id'], item, data.get('quantity', 1), data.get('note', ''))
     return jsonify({'success': ok})
 
 
@@ -427,7 +428,7 @@ def api_order_add():
 @login_required
 def api_order_remove():
     data = request.get_json()
-    ok = os.remove_item_from_table(data['table_id'], data['index'])
+    ok = order_svc.remove_item_from_table(data['table_id'], data['index'])
     return jsonify({'success': ok})
 
 
@@ -441,7 +442,7 @@ def api_order_table(table_id):
         'id': table.id, 'status': table.status,
         'customer_name': table.customer_name,
         'order': table.order,
-        'subtotal': os.calculate_subtotal(table)
+        'subtotal': order_svc.calculate_subtotal(table)
     })
 
 
@@ -487,7 +488,7 @@ def api_billing_calculate():
     table = ts.get_by_id(data['table_id'])
     if not table:
         return jsonify({'error': 'Not found'}), 404
-    subtotal = os.calculate_subtotal(table)
+    subtotal = order_svc.calculate_subtotal(table)
     voucher_code = data.get('voucher_code', '')
     manual_discount = data.get('manual_discount', 0)
     discount = 0
@@ -520,7 +521,7 @@ def api_billing_pay():
     table = ts.get_by_id(data['table_id'])
     if not table:
         return jsonify({'error': 'Not found'}), 404
-    subtotal = os.calculate_subtotal(table)
+    subtotal = order_svc.calculate_subtotal(table)
     total = data['total']
     discount = subtotal - total
     discount_type = data.get('discount_type', 'none')
@@ -528,7 +529,7 @@ def api_billing_pay():
     payment = data['payment']
     change = payment - total
 
-    invoice = os.save_invoice(
+    invoice = order_svc.save_invoice(
         table, discount, discount_type, voucher_code,
         total, payment, change, session['username']
     )
@@ -647,10 +648,4 @@ def api_users_change_password():
     return jsonify({'success': ok})
 
 
-# ============ MAIN ============
-
-if __name__ == '__main__':
-    print("== QUAN LY QUAN COFFEE - WEB APP ==")
-    print(f"Truy cap: http://{get_host_url()}:5001")
-    print("Tai khoan: admin / admin123 hoac nhanvien1 / nv123")
-    app.run(debug=True, host='0.0.0.0', port=5001)
+# ============ MAIN (use wsgi.py or gunicorn) ============
