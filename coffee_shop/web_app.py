@@ -73,10 +73,13 @@ def logout():
 # ============ CUSTOMER QR ORDERING (no login required) ============
 
 def get_host_url():
+    import os
+    public_url = os.environ.get('PUBLIC_URL')
+    if public_url:
+        return public_url
     try:
         hostname = socket.gethostname()
         ips = socket.gethostbyname_ex(hostname)[2]
-        # Skip loopback and 172.16-31.x.x (common Docker/VPN)
         for ip in ips:
             if ip.startswith('127.'):
                 continue
@@ -84,7 +87,6 @@ def get_host_url():
             if parts[0] == '172' and 16 <= int(parts[1]) <= 31:
                 continue
             return ip
-        # Fallback: first non-loopback
         for ip in ips:
             if not ip.startswith('127.'):
                 return ip
@@ -93,13 +95,20 @@ def get_host_url():
         return "127.0.0.1"
 
 
+def get_base_url():
+    import os
+    public_url = os.environ.get('PUBLIC_URL')
+    if public_url:
+        return public_url.rstrip('/')
+    return f"http://{get_host_url()}:5001"
+
+
 @app.route('/customer/<int:table_id>')
 def customer_menu(table_id):
     table = ts.get_by_id(table_id)
     if not table:
         return "Bàn không tồn tại", 404
-    host_url = f"http://{get_host_url()}:5001"
-    return render_template('customer_menu.html', table_id=table_id, host_url=host_url)
+    return render_template('customer_menu.html', table_id=table_id, host_url=get_base_url())
 
 
 @app.route('/api/customer/menu')
@@ -176,8 +185,7 @@ def api_generate_qrcode(table_id):
     table = ts.get_by_id(table_id)
     if not table:
         return jsonify({'error': 'Not found'}), 404
-    host_url = f"http://{get_host_url()}:5001"
-    url = f"{host_url}/customer/{table_id}"
+    url = f"{get_base_url()}/customer/{table_id}"
     img = qrcode.make(url)
     buf = io.BytesIO()
     img.save(buf, format='PNG')
@@ -190,11 +198,10 @@ def api_generate_qrcode(table_id):
 @admin_required
 def api_qrcodes_all():
     tables = ts.get_all()
-    host_url = f"http://{get_host_url()}:5001"
     return jsonify([{
         'id': t.id,
         'status': t.status,
-        'url': f"{host_url}/customer/{t.id}"
+        'url': f"{get_base_url()}/customer/{t.id}"
     } for t in tables])
 
 
